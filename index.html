@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>MED | Tu salud, en un solo lugar</title>
+<style>
+:root{
+  --med:#5ce1e6;
+  --med-dark:#32cbd3;
+  --med-pale:#e9fbfc;
+  --navy:#17324d;
+  --ink:#18344d;
+  --muted:#7890a1;
+  --bg:#f7fbfc;
+  --white:#fff;
+  --line:#e4eff1;
+  --green:#39b98b;
+  --green-pale:#eaf9f4;
+  --orange:#f3a64b;
+  --orange-pale:#fff5e7;
+  --red:#e96d76;
+  --red-pale:#fff0f2;
+  --shadow:0 12px 32px rgba(29,75,91,.07);
+  --r:20px;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,Segoe UI,Arial,sans-serif}
+button,input,select,textarea{font:inherit}button{cursor:pointer}
+.app{min-height:100vh;display:flex}
+
+/* LEFT NAV — identity inspired by MED */
+.sidebar{
+  position:fixed;left:0;top:0;bottom:0;width:246px;background:var(--white);
+  border-right:1px solid var(--line);padding:22px 15px;z-index:10
+}
+.brand{background:var(--med);border-radius:18px;padding:18px 16px 15px;margin-bottom:24px;color:white}
+.brand svg{display:block;width:125px;height:58px}
+.brand small{font-size:10px;opacity:.95;display:block;margin-top:4px}
+.nav-title{font-size:10px;font-weight:800;letter-spacing:1.2px;color:#9aadb9;margin:0 12px 8px}
+.nav{display:grid;gap:4px}
+.nav button{
+  border:0;background:transparent;color:#688093;text-align:left;border-radius:12px;
+  padding:12px 13px;display:flex;align-items:center;gap:12px;font-weight:650;
+  transition:.18s
+}
+.nav button:hover{background:var(--med-pale);color:#238b91}
+.nav button.active{background:var(--med);color:#fff;box-shadow:0 7px 16px rgba(92,225,230,.25)}
+.nav .ico{width:21px;text-align:center;font-size:18px;font-style:normal}
+.side-bottom{position:absolute;left:15px;right:15px;bottom:18px}
+.security{background:#f5fafb;border:1px solid var(--line);border-radius:14px;padding:12px;font-size:11px;color:var(--muted);line-height:1.45}
+.security strong{display:block;color:var(--ink);margin-bottom:3px}
+
+/* MAIN */
+.main{margin-left:246px;width:calc(100% - 246px)}
+.topbar{
+  height:72px;background:#fff;border-bottom:1px solid var(--line);display:flex;
+  align-items:center;padding:0 32px;gap:20px;position:sticky;top:0;z-index:8
+}
+.search{height:40px;width:480px;background:#f5fafb;border:1px solid #edf4f5;border-radius:12px;display:flex;align-items:center;padding:0 13px;gap:8px;color:#8ca0ad}
+.search input{border:0;background:transparent;outline:0;width:100%;color:var(--ink)}
+.top-actions{margin-left:auto;display:flex;align-items:center;gap:11px}
+.circle-btn{width:39px;height:39px;border:1px solid var(--line);border-radius:50%;background:#fff;color:var(--navy)}
+.profile-mini{display:flex;align-items:center;gap:9px;padding-left:5px}
+.avatar{width:39px;height:39px;border-radius:50%;background:var(--med-pale);color:#239199;display:grid;place-items:center;font-weight:800}
+.profile-mini small{display:block;color:var(--muted);font-size:10px}
+.content{padding:30px 32px 50px;max-width:1500px}
+.page{display:none}.page.active{display:block}
+h1{font-size:30px;letter-spacing:-.7px;margin:0 0 4px}
+.subtitle{margin:0;color:var(--muted);font-size:13px}
+
+/* HOME HERO */
+.welcome{
+  position:relative;overflow:hidden;background:var(--med);border-radius:24px;
+  min-height:172px;padding:28px 30px;color:#fff;display:flex;align-items:center;
+  justify-content:space-between;margin-bottom:18px
+}
+.welcome:after{
+  content:"";position:absolute;width:310px;height:310px;border:1px solid rgba(255,255,255,.25);
+  border-radius:50%;right:-120px;top:-130px
+}
+.welcome .eyeline{font-size:11px;font-weight:800;letter-spacing:1px;opacity:.9;margin-bottom:7px}
+.welcome h1{font-size:31px;margin-bottom:7px}.welcome p{margin:0;color:#f4ffff}
+.pulse-card{position:relative;z-index:1;width:300px;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.3);border-radius:17px;padding:15px}
+.pulse-card small{display:block;opacity:.9;margin-bottom:5px}.pulse{height:47px;width:100%}
+.pulse path{fill:none;stroke:#fff;stroke-width:3}
+
+/* COMMON CARDS */
+.card{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:20px;box-shadow:var(--shadow)}
+.card-title{display:flex;justify-content:space-between;align-items:center;margin-bottom:15px}
+.card-title h2{font-size:16px;margin:0}.card-title a{font-size:11px;color:#27a4aa;text-decoration:none;font-weight:800}
+.grid{display:grid;gap:16px}.g4{grid-template-columns:repeat(4,1fr)}.g3{grid-template-columns:repeat(3,1fr)}.g2{grid-template-columns:repeat(2,1fr)}
+.layout{display:grid;grid-template-columns:minmax(0,1fr) 335px;gap:16px}
+.metric{min-height:125px;position:relative;overflow:hidden}.metric small{color:var(--muted);font-size:11px}.metric strong{display:block;font-size:23px;margin:8px 0 4px}.metric .sub{font-size:11px;color:var(--muted)}
+.metric-icon{position:absolute;right:17px;top:17px;width:42px;height:42px;border-radius:13px;display:grid;place-items:center;font-size:19px}
+.cyan{background:var(--med-pale);color:#27a4aa}.green{background:var(--green-pale);color:#27a37d}.orange{background:var(--orange-pale);color:#c8832d}.red{background:var(--red-pale);color:#d25c66}
+.muted{color:var(--muted);font-size:12px}
+.tag{display:inline-flex;padding:5px 8px;border-radius:999px;font-size:10px;font-weight:800}
+.ok{background:var(--green-pale);color:#238c6b}.pending{background:var(--orange-pale);color:#ad7126}.blue{background:var(--med-pale);color:#268e95}
+.row{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid #edf3f4}.row:last-child{border-bottom:0}
+.row-left{display:flex;gap:11px;align-items:center}.mini{width:37px;height:37px;border-radius:11px;background:var(--med-pale);color:#26949a;display:grid;place-items:center}
+.btn{border:0;border-radius:10px;padding:9px 13px;font-size:11px;font-weight:800}
+.btn-med{background:var(--med);color:white}.btn-dark{background:var(--navy);color:white}.btn-light{background:var(--med-pale);color:#238e94}
+.notice{background:#f5fbfb;border:1px solid #dff0f1;border-radius:13px;padding:12px;color:#5c7888;font-size:11px;line-height:1.5}.notice strong{color:#287d82}
+
+/* APPOINTMENTS */
+.appt{display:flex;gap:12px;align-items:center;padding:13px;border:1px solid #e9f0f2;border-radius:14px;margin-bottom:10px}
+.date{width:50px;height:54px;border-radius:12px;background:var(--med-pale);color:#278f96;text-align:center;padding:7px 3px;flex:none}.date b{display:block;font-size:20px;line-height:21px}.date small{font-size:9px;font-weight:800}
+.appt-main{flex:1}.appt-main b{font-size:13px}.appt-main small{display:block;color:var(--muted);font-size:11px;margin-top:3px}
+
+/* CARE PLAN */
+.care-item{display:flex;align-items:center;gap:13px;padding:12px 0;border-bottom:1px solid #edf3f4}.care-item:last-child{border-bottom:0}
+.check{width:34px;height:34px;border-radius:10px;background:#f1f7f8;border:0;color:#9ab0ba}.check.done{background:var(--med);color:white}
+.care-copy{flex:1}.care-copy b{font-size:12px}.care-copy span{display:block;color:var(--muted);font-size:10px;margin-top:3px}
+.water-line{display:flex;gap:6px;margin:12px 0}.glass{height:34px;flex:1;border:1px solid #dceff1;border-radius:7px;background:#f7fbfc;color:#75a7ae}.glass.fill{background:var(--med);color:#fff;border-color:var(--med)}
+.progress{height:7px;background:#eaf1f2;border-radius:99px;overflow:hidden}.progress i{height:100%;display:block;background:var(--med);border-radius:99px}
+
+/* DIET */
+.food{display:flex;gap:14px;align-items:center}.food-art{width:80px;height:80px;border-radius:50%;background:#effaf5;display:grid;place-items:center;font-size:35px;flex:none}
+.meal{display:grid;grid-template-columns:90px 1fr 70px;gap:10px;padding:10px 0;border-bottom:1px solid #edf3f4;align-items:center;font-size:11px}.meal:last-child{border-bottom:0}
+.meal b{font-size:11px}.meal small{color:var(--muted)}
+/* ACCESS / QR */
+.qr-box{display:flex;gap:17px;align-items:center}.qr{width:100px;height:100px;background:repeating-conic-gradient(#17324d 0 25%,#fff 0 50%) 0/14px 14px;border:7px solid #fff;box-shadow:0 0 0 1px #dce8eb}
+.access-line{display:flex;align-items:center;justify-content:space-between;padding:11px 0;border-bottom:1px solid #edf3f4}.access-line:last-child{border:0}
+
+/* PAGE TABLES / MODALS */
+.table{width:100%;border-collapse:collapse}.table th,.table td{text-align:left;padding:12px;border-bottom:1px solid #edf3f4;font-size:11px}.table th{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}.table tr:last-child td{border:0}
+.modal{display:none;position:fixed;inset:0;background:rgba(23,50,77,.43);z-index:20;align-items:center;justify-content:center;padding:20px}.modal.open{display:flex}
+.modal-box{background:white;width:min(570px,100%);border-radius:20px;padding:23px;box-shadow:0 25px 70px rgba(23,50,77,.2)}.form{display:grid;gap:10px}.form label{font-size:10px;color:var(--muted);font-weight:800}.form input,.form select,.form textarea{border:1px solid #dfeaec;border-radius:9px;padding:10px;outline:0}.actions{display:flex;justify-content:flex-end;gap:8px;margin-top:16px}
+.toast{position:fixed;right:24px;bottom:24px;background:var(--navy);color:#fff;border-radius:11px;padding:12px 15px;font-size:11px;display:none;z-index:30}.toast.show{display:block}
+
+/* responsive */
+@media(max-width:1150px){.sidebar{width:80px}.brand small,.nav-title,.nav button span,.security{display:none}.brand{padding:13px 8px}.med-logo{transform:scale(.72);transform-origin:center}.nav button{justify-content:center}.main{margin-left:80px;width:calc(100% - 80px)}.g4{grid-template-columns:repeat(2,1fr)}.layout{grid-template-columns:1fr}}
+@media(max-width:760px){.topbar{padding:0 15px}.content{padding:20px 15px}.search{display:none}.g4,.g3,.g2{grid-template-columns:1fr}.welcome{align-items:flex-start;gap:18px;flex-direction:column}.pulse-card{width:100%}.profile-mini div{display:none}}
+
+/* Minimal MED logo — built entirely with CSS */
+.med-logo{
+  position:relative;
+  width:100%;
+  height:70px;
+  display:flex;
+  align-items:flex-end;
+  justify-content:center;
+  padding-bottom:1px;
+}
+.med-pulse{
+  position:absolute;
+  left:3px;
+  right:3px;
+  top:8px;
+  height:27px;
+  display:flex;
+  align-items:center;
+  gap:0;
+}
+.med-pulse:before{
+  content:"";
+  position:absolute;
+  left:0;right:0;top:13px;
+  height:2px;
+  background:rgba(255,255,255,.92);
+  border-radius:99px;
+}
+.med-pulse i{
+  position:relative;
+  z-index:1;
+  display:block;
+  width:20%;
+  height:26px;
+}
+.med-pulse i:nth-child(1){clip-path:polygon(0 46%,38% 46%,52% 43%,62% 48%,100% 48%,100% 57%,58% 57%,50% 53%,42% 58%,0 58%)}
+.med-pulse i:nth-child(2){clip-path:polygon(0 48%,20% 48%,35% 44%,48% 50%,57% 8%,67% 91%,79% 46%,100% 46%,100% 58%,84% 58%,76% 100%,65% 23%,58% 58%,45% 58%,34% 53%,20% 58%,0 58%)}
+.med-pulse i:nth-child(3){clip-path:polygon(0 48%,20% 48%,35% 44%,48% 50%,57% 8%,67% 91%,79% 46%,100% 46%,100% 58%,84% 58%,76% 100%,65% 23%,58% 58%,45% 58%,34% 53%,20% 58%,0 58%)}
+.med-pulse i:nth-child(4){clip-path:polygon(0 48%,22% 48%,38% 45%,49% 50%,58% 14%,68% 86%,80% 46%,100% 46%,100% 58%,84% 58%,76% 96%,65% 27%,58% 58%,46% 58%,34% 53%,22% 58%,0 58%)}
+.med-pulse i:nth-child(5){clip-path:polygon(0 48%,40% 48%,52% 43%,63% 48%,100% 48%,100% 57%,63% 57%,52% 53%,40% 58%,0 58%)}
+.med-pulse i:nth-child(6){clip-path:polygon(0 48%,40% 48%,52% 43%,63% 48%,100% 48%,100% 57%,63% 57%,52% 53%,40% 58%,0 58%)}
+.med-pulse:after{
+  content:"";
+  position:absolute;
+  width:7px;height:7px;border-radius:50%;
+  background:#fff;
+  top:10px;left:53%;
+  box-shadow:0 0 0 4px rgba(255,255,255,.15);
+  animation:medBeat 2.4s ease-in-out infinite;
+}
+.med-word{
+  position:relative;
+  z-index:2;
+  color:#fff;
+  font-size:28px;
+  line-height:28px;
+  letter-spacing:5px;
+  font-weight:850;
+  padding-left:5px;
+}
+@keyframes medBeat{
+  0%,70%,100%{transform:scale(1);opacity:1}
+  74%{transform:scale(1.3);opacity:.85}
+  78%{transform:scale(1);opacity:1}
+}
+.brand{padding-top:14px}
+.brand small{text-align:center;letter-spacing:.15px}
+
+</style>
+</head>
+<body>
+<div class="app">
+<aside class="sidebar">
+  <div class="brand" aria-label="MED">
+    <div class="med-logo">
+      <div class="med-pulse" aria-hidden="true">
+        <i></i><i></i><i></i><i></i><i></i><i></i>
+      </div>
+      <div class="med-word">MED</div>
+    </div>
+    <small>Tu salud, en un solo lugar</small>
+  </div>
+  <div class="nav-title">MI SALUD</div>
+  <nav class="nav">
+    <button class="active" onclick="showPage('inicio',this)"><i class="ico">⌂</i><span>Inicio</span></button>
+    <button onclick="showPage('perfil',this)"><i class="ico">◯</i><span>Mi perfil</span></button>
+    <button onclick="showPage('historial',this)"><i class="ico">▤</i><span>Historial médico</span></button>
+    <button onclick="showPage('tratamientos',this)"><i class="ico">✚</i><span>Tratamientos</span></button>
+    <button onclick="showPage('dieta',this)"><i class="ico">◌</i><span>Dieta y nutrición</span></button>
+    <button onclick="showPage('citas',this)"><i class="ico">□</i><span>Citas</span></button>
+    <button onclick="showPage('recordatorios',this)"><i class="ico">♧</i><span>Recordatorios</span></button>
+    <button onclick="showPage('compartir',this)"><i class="ico">⌯</i><span>Compartir / QR</span></button>
+    <button onclick="showPage('mensajes',this)"><i class="ico">□</i><span>Mensajes</span></button>
+  </nav>
+  <div class="side-bottom"><div class="security"><strong>✓ Información protegida</strong>Tu expediente está bajo control. Los cambios clínicos requieren autorización profesional.</div></div>
+</aside>
+
+<main class="main">
+<header class="topbar">
+  <div class="search">⌕ <input id="search" placeholder="Buscar en tu expediente..."></div>
+  <div class="top-actions">
+    <button class="circle-btn" onclick="toast('No tienes alertas críticas')">♧</button>
+    <div class="profile-mini"><div class="avatar">O</div><div><b>Oscar</b><small>Paciente</small></div></div>
+  </div>
+</header>
+
+<div class="content">
+<section id="inicio" class="page active">
+  <div class="welcome">
+    <div><div class="eyeline">MED · EXPEDIENTE DE SALUD</div><h1>Hola, Oscar</h1><p>Tu salud física y mental, organizada en un solo lugar.</p></div>
+    <div class="pulse-card"><small>Tu estado de salud</small>
+      <svg class="pulse" viewBox="0 0 300 55"><path d="M0 30 H55 L67 30 L76 14 L88 45 L107 4 L127 49 L150 8 L171 43 L182 25 L194 30 H300"/></svg>
+      <b>Todo en orden</b>
+    </div>
+  </div>
+
+  <div class="grid g4">
+    <div class="card metric"><div class="metric-icon cyan">□</div><small>PRÓXIMA CITA</small><strong>28 oct.</strong><div class="sub">Dentista · 10:00 a.m.</div></div>
+    <div class="card metric"><div class="metric-icon green">●</div><small>NUTRICIÓN</small><strong>15 oct.</strong><div class="sub">Lic. Nutrición Joshoa Aguilar · 09:00 a.m.</div></div>
+    <div class="card metric"><div class="metric-icon orange">♧</div><small>HIDRATACIÓN</small><strong id="metricWater">1.25 L</strong><div class="sub">Meta diaria · 2 L</div></div>
+    <div class="card metric"><div class="metric-icon red">✓</div><small>PLAN DE HOY</small><strong>2 de 3</strong><div class="sub">comidas registradas</div></div>
+  </div>
+
+  <div class="layout" style="margin-top:16px">
+    <div style="display:grid;gap:16px">
+      <div class="grid g2">
+        <div class="card">
+          <div class="card-title"><h2>Mi información</h2><a href="#" onclick="showPage('perfil',document.querySelectorAll('.nav button')[1]);return false">Ver perfil →</a></div>
+          <div class="row"><span class="muted">Nombre</span><b>Oscar</b></div>
+          <div class="row"><span class="muted">Tipo de sangre</span><b>O+</b></div>
+          <div class="row"><span class="muted">Alergias</span><b>Ninguna conocida</b></div>
+          <div class="row"><span class="muted">Contacto de emergencia</span><b>María López</b></div>
+        </div>
+        <div class="card">
+          <div class="card-title"><h2>Resumen clínico</h2><span class="tag blue">Actualizado</span></div>
+          <div class="row"><div class="row-left"><div class="mini">♥</div><div><b>Signos vitales</b><div class="muted">Última actualización · 10 oct.</div></div></div><span>›</span></div>
+          <div class="row"><div class="row-left"><div class="mini">✚</div><div><b>Medicamentos</b><div class="muted">2 activos</div></div></div><span>›</span></div>
+          <div class="row"><div class="row-left"><div class="mini">◉</div><div><b>Salud mental</b><div class="muted">Información protegida</div></div></div><span>›</span></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><h2>Tu cuidado de hoy</h2><a href="#" onclick="showPage('recordatorios',document.querySelectorAll('.nav button')[6]);return false">Ver todos →</a></div>
+        <div class="care-item"><button class="check done">✓</button><div class="care-copy"><b>Vitamina D</b><span>1 tableta · 08:00 a.m.</span></div><span class="tag ok">Completado</span></div>
+        <div class="care-item"><button class="check" onclick="toggleCare(this)">○</button><div class="care-copy"><b>Tomar agua</b><span>Meta diaria · 2 litros</span></div><span class="tag blue">En curso</span></div>
+        <div class="care-item"><button class="check" onclick="toggleCare(this)">○</button><div class="care-copy"><b>Seguir dieta</b><span>Desayuno · comida · cena</span></div><span class="tag pending">Pendiente</span></div>
+      </div>
+
+      <div class="grid g2">
+        <div class="card">
+          <div class="card-title"><h2>Dieta de hoy</h2><span class="tag ok">Activa</span></div>
+          <div class="food"><div class="food-art">🥗</div><div><b>Dieta equilibrada</b><div class="muted" style="margin-top:4px">Indicada por Lic. Nutrición Joshoa Aguilar</div><div style="margin-top:9px"><button class="btn btn-light" onclick="showPage('dieta',document.querySelectorAll('.nav button')[4])">Ver plan →</button></div></div></div>
+        </div>
+        <div class="card">
+          <div class="card-title"><h2>Agua</h2><b id="waterText">1.25 / 2 L</b></div>
+          <div class="water-line" id="water"></div>
+          <div class="progress"><i id="waterProgress" style="width:62.5%"></i></div>
+          <div style="display:flex;justify-content:space-between;margin-top:8px"><span class="muted">5 vasos</span><button class="btn btn-light" onclick="addWater()">+ vaso</button></div>
+        </div>
+      </div>
+    </div>
+
+    <aside style="display:grid;gap:16px;align-content:start">
+      <div class="card">
+        <div class="card-title"><h2>Próximas citas</h2><a href="#" onclick="showPage('citas',document.querySelectorAll('.nav button')[5]);return false">Ver agenda →</a></div>
+        <div class="appt"><div class="date"><small>OCT</small><b>28</b></div><div class="appt-main"><b>Dentista</b><small>Dr. Carlos Ramírez · 10:00 a.m.</small></div><span class="tag ok">Confirmada</span></div>
+        <div class="appt"><div class="date"><small>OCT</small><b>15</b></div><div class="appt-main"><b>Lic. Nutrición Joshoa Aguilar</b><small>Consulta de nutrición · 09:00 a.m.</small></div><span class="tag ok">Confirmada</span></div>
+      </div>
+      <div class="card">
+        <div class="card-title"><h2>Acceso rápido</h2></div>
+        <div class="row"><div class="row-left"><div class="mini">⌯</div><div><b>Compartir expediente</b><div class="muted">Genera un acceso temporal</div></div></div><span>›</span></div>
+        <div class="row"><div class="row-left"><div class="mini">▤</div><div><b>Historial médico</b><div class="muted">Consulta tus registros</div></div></div><span>›</span></div>
+        <div class="row"><div class="row-left"><div class="mini">♧</div><div><b>Recordatorios</b><div class="muted">No olvides tus cuidados</div></div></div><span>›</span></div>
+      </div>
+      <div class="card" style="background:var(--navy);color:#fff;border-color:var(--navy)">
+        <div class="card-title"><h2 style="color:#fff">Emergencia</h2><span class="tag" style="background:rgba(92,225,230,.16);color:var(--med)">QR</span></div>
+        <p style="color:#bdd0dd;font-size:11px;line-height:1.5">Permite a un profesional autorizado consultar información crítica en una situación de emergencia.</p>
+        <button class="btn btn-med" onclick="showPage('compartir',document.querySelectorAll('.nav button')[7])">Abrir acceso de emergencia</button>
+      </div>
+    </aside>
+  </div>
+</section>
+
+<section id="perfil" class="page">
+  <h1>Mi perfil</h1><p class="subtitle">Tu información personal y contactos de emergencia.</p>
+  <div class="grid g2">
+    <div class="card"><div class="card-title"><h2>Datos personales</h2><span class="tag blue">Paciente</span></div><div class="row"><span class="muted">Nombre</span><b>Oscar</b></div><div class="row"><span class="muted">Edad</span><b>28 años</b></div><div class="row"><span class="muted">Tipo de sangre</span><b>O+</b></div><div class="row"><span class="muted">Alergias</span><b>Ninguna conocida</b></div></div>
+    <div class="card"><div class="card-title"><h2>Red de apoyo</h2><button class="btn btn-light" onclick="toast('Contacto agregado')">+ Agregar</button></div><div class="row"><div><b>María López</b><div class="muted">Contacto de emergencia</div></div><span class="tag blue">Autorizado</span></div><div class="notice">La red de apoyo puede recibir únicamente la información que tú autorices.</div></div>
+  </div>
+</section>
+
+<section id="historial" class="page">
+  <h1>Historial médico</h1><p class="subtitle">Expediente clínico integral con salud física y mental en una sola vista.</p>
+  <div class="notice"><strong>🔒 Solo lectura para Oscar.</strong> El paciente puede consultar y compartir la información autorizada; las modificaciones clínicas corresponden al profesional autorizado.</div>
+  <div class="card" style="margin-top:16px"><div class="card-title"><h2>Registros clínicos</h2><span class="tag blue">Expediente integral</span></div>
+  <table class="table"><thead><tr><th>Fecha</th><th>Profesional</th><th>Área</th><th>Registro</th><th>Estado</th></tr></thead><tbody>
+  <tr><td>10 oct.</td><td>Dr. Carlos Ramírez</td><td>Dental</td><td>Revisión general</td><td><span class="tag ok">Visible</span></td></tr>
+  <tr><td>15 oct.</td><td>Lic. Nutrición Joshoa Aguilar</td><td>Nutrición</td><td>Plan alimenticio</td><td><span class="tag ok">Visible</span></td></tr>
+  <tr><td>02 oct.</td><td>Médico general</td><td>General</td><td>Signos vitales</td><td><span class="tag ok">Visible</span></td></tr>
+  </tbody></table></div>
+  <div class="card" style="margin-top:16px"><div class="card-title"><h2>Control de cambios</h2><span class="tag blue">Auditoría</span></div><div class="row"><div><b>Última actualización</b><div class="muted">10 oct. · Dr. Carlos Ramírez</div></div><span>✓</span></div><div class="row"><div><b>Acceso de Oscar</b><div class="muted">Consulta · sin permiso de edición</div></div><span class="tag blue">Solo lectura</span></div></div>
+</section>
+
+<section id="tratamientos" class="page">
+  <h1>Tratamientos</h1><p class="subtitle">Medicamentos, indicaciones y seguimiento de tu atención.</p>
+  <div class="grid g2"><div class="card"><div class="card-title"><h2>Tratamientos activos</h2><span class="tag ok">2 activos</span></div>
+    <div class="row"><div class="row-left"><div class="mini">✚</div><div><b>Vitamina D</b><div class="muted">1 tableta · 08:00 a.m.</div></div></div><span class="tag ok">Activo</span></div>
+    <div class="row"><div class="row-left"><div class="mini">✚</div><div><b>Tratamiento dental</b><div class="muted">Según indicación profesional</div></div></div><span class="tag ok">Activo</span></div>
+  </div><div class="card"><div class="card-title"><h2>Adherencia</h2><span class="tag blue">Esta semana</span></div><div style="display:flex;align-items:center;gap:25px"><div style="width:105px;height:105px;border-radius:50%;background:conic-gradient(var(--med) 72%,#e8f1f2 0);display:grid;place-items:center;position:relative"><div style="width:80px;height:80px;background:#fff;border-radius:50%;display:grid;place-items:center;font-weight:800">72%</div></div><div><b>Buen progreso</b><p class="muted">Continúa con tus recordatorios y registra cada toma.</p></div></div></div></div>
+</section>
+
+<section id="dieta" class="page">
+  <h1>Dieta y nutrición</h1><p class="subtitle">Tu plan diario indicado por Lic. Nutrición Joshoa Aguilar.</p>
+  <div class="grid g2">
+    <div class="card"><div class="card-title"><h2>Plan de hoy</h2><span class="tag ok">Activo</span></div>
+      <div class="meal"><b>Desayuno<br><small>08:00 a.m.</small></b><span>Avena con fruta y nueces</span><button class="btn btn-light" onclick="toast('Desayuno registrado')">✓</button></div>
+      <div class="meal"><b>Comida<br><small>01:00 p.m.</small></b><span>Pollo + ensalada + arroz integral</span><button class="btn btn-light" onclick="toast('Comida registrada')">✓</button></div>
+      <div class="meal"><b>Cena<br><small>07:00 p.m.</small></b><span>Pescado + verduras al vapor</span><button class="btn btn-light" onclick="toast('Cena registrada')">✓</button></div>
+    </div>
+    <div class="card"><div class="card-title"><h2>Hidratación</h2><b id="waterText2">1.25 / 2 L</b></div><div class="water-line" id="water2"></div><div class="progress"><i id="waterProgress2" style="width:62.5%"></i></div><p class="muted">8 vasos de 250 ml completan tu meta.</p><button class="btn btn-med" onclick="addWater()">+ Registrar vaso</button></div>
+  </div>
+</section>
+
+<section id="citas" class="page">
+  <div style="display:flex;justify-content:space-between;align-items:end;margin-bottom:18px"><div><h1>Citas</h1><p class="subtitle">Tu agenda médica, en un solo lugar.</p></div><button class="btn btn-med" onclick="openModal('appointmentModal')">+ Nueva cita</button></div>
+  <div class="card"><div id="appointments"></div></div>
+</section>
+
+<section id="recordatorios" class="page">
+  <div style="display:flex;justify-content:space-between;align-items:end;margin-bottom:18px"><div><h1>Recordatorios</h1><p class="subtitle">Cuida lo importante sin tener que recordarlo todo.</p></div><button class="btn btn-med" onclick="openModal('reminderModal')">+ Recordatorio</button></div>
+  <div class="grid g2"><div class="card"><div class="card-title"><h2>Hoy</h2><span class="tag blue">3 pendientes</span></div>
+    <div class="row"><div><b>Tomar agua</b><div class="muted">Meta · 2 litros</div></div><span class="tag blue">En curso</span></div>
+    <div class="row"><div><b>Vitamina D</b><div class="muted">08:00 a.m.</div></div><span class="tag ok">Completado</span></div>
+    <div class="row"><div><b>Seguir dieta</b><div class="muted">Durante el día</div></div><span class="tag pending">Pendiente</span></div>
+  </div><div class="card"><div class="card-title"><h2>Próximas citas</h2></div><div class="row"><div><b>Nutrijochis</b><div class="muted">15 de octubre · 09:00 a.m. · cita de nutrición</div></div><span class="tag pending">Pendiente</span></div><div class="row"><div><b>Dentista</b><div class="muted">28 de octubre · 10:00 a.m.</div></div><span class="tag pending">Pendiente</span></div></div></div>
+</section>
+
+<section id="compartir" class="page">
+  <h1>Compartir y QR</h1><p class="subtitle">Comparte tu expediente de forma controlada, con profesionales o tu red de apoyo.</p>
+  <div class="grid g2">
+    <div class="card"><div class="card-title"><h2>Acceso temporal</h2><span class="tag blue">Controlado</span></div><div class="form"><label>QUÉ PUEDE VER</label><select><option>Expediente clínico</option><option>Expediente + tratamientos</option><option>Expediente + citas</option><option>Información de emergencia</option></select><label>DURACIÓN</label><select><option>1 hora</option><option>24 horas</option><option>7 días</option></select><button class="btn btn-med" onclick="toast('Enlace seguro generado')">Generar acceso</button></div></div>
+    <div class="card"><div class="card-title"><h2>Código de emergencia</h2><span class="tag ok">Disponible</span></div><div class="qr-box"><div class="qr"></div><div><b>Acceso médico de emergencia</b><p class="muted">Un profesional autorizado puede escanearlo para consultar la información crítica que hayas habilitado.</p><button class="btn btn-light" onclick="toast('Código copiado')">Copiar código</button></div></div></div>
+  </div>
+  <div class="card" style="margin-top:16px"><div class="card-title"><h2>Personas con acceso</h2><button class="btn btn-light" onclick="toast('Invitación preparada')">+ Invitar</button></div>
+    <div class="access-line"><div><b>Dr. Carlos Ramírez</b><div class="muted">Profesional · expediente clínico</div></div><span class="tag ok">Activo</span></div>
+    <div class="access-line"><div><b>María López</b><div class="muted">Red de apoyo · información autorizada</div></div><span class="tag blue">Limitado</span></div>
+  </div>
+</section>
+
+<section id="mensajes" class="page">
+  <h1>Mensajes</h1><p class="subtitle">Comunicación con tus profesionales de salud.</p>
+  <div class="card"><div class="row"><div class="row-left"><div class="avatar">CR</div><div><b>Dr. Carlos Ramírez</b><div class="muted">Tu revisión dental está confirmada para el 28 de octubre.</div></div></div><span class="tag ok">Nuevo</span></div><div class="row"><div class="row-left"><div class="avatar">N</div><div><b>Lic. Nutrición Joshoa Aguilar</b><div class="muted">Tu plan alimenticio está activo. Recuerda hidratarte.</div></div></div><span class="tag ok">Nuevo</span></div><button class="btn btn-med" style="margin-top:15px" onclick="toast('Conversación abierta')">Abrir conversación</button></div>
+</section>
+</div>
+</main>
+</div>
+
+<div class="modal" id="appointmentModal"><div class="modal-box"><h2>Nueva cita</h2><div class="form"><label>PROFESIONAL / ESPECIALIDAD</label><input id="newDoctor" placeholder="Ej. Cardiología / Dra. López"><label>FECHA</label><input id="newDate" type="date"><label>HORA</label><input id="newTime" type="time"></div><div class="actions"><button class="btn btn-light" onclick="closeModal('appointmentModal')">Cancelar</button><button class="btn btn-med" onclick="addAppointment()">Guardar cita</button></div></div></div>
+<div class="modal" id="reminderModal"><div class="modal-box"><h2>Nuevo recordatorio</h2><div class="form"><label>NOMBRE</label><input id="remName" placeholder="Ej. Tomar medicamento"><label>HORA</label><input id="remTime" type="time"></div><div class="actions"><button class="btn btn-light" onclick="closeModal('reminderModal')">Cancelar</button><button class="btn btn-med" onclick="addReminder()">Crear</button></div></div></div>
+<div class="toast" id="toast"></div>
+
+<script>
+const pages=[...document.querySelectorAll('.page')];
+function showPage(id,btn){
+ pages.forEach(p=>p.classList.toggle('active',p.id===id));
+ document.querySelectorAll('.nav button').forEach(b=>b.classList.remove('active'));
+ if(btn)btn.classList.add('active');
+ scrollTo({top:0,behavior:'smooth'});
+}
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2400)}
+function openModal(id){document.getElementById(id).classList.add('open')}
+function closeModal(id){document.getElementById(id).classList.remove('open')}
+function toggleCare(btn){btn.classList.toggle('done');btn.textContent=btn.classList.contains('done')?'✓':'○';toast(btn.classList.contains('done')?'Recordatorio completado':'Recordatorio pendiente')}
+let water=5;
+function renderWater(){
+ const liters=(water*.25).toFixed(2), pct=water/8*100;
+ ['water','water2'].forEach(id=>{
+   const el=document.getElementById(id); if(!el)return; el.innerHTML='';
+   for(let i=0;i<8;i++){const b=document.createElement('button');b.className='glass '+(i<water?'fill':'');b.textContent=i<water?'✓':'+';b.onclick=()=>{water=i<water?i:i+1;renderWater()};el.appendChild(b)}
+ });
+ ['waterText','waterText2'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=liters+' / 2 L'});
+ ['waterProgress','waterProgress2'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.width=pct+'%'});
+ const m=document.getElementById('metricWater');if(m)m.textContent=liters+' L';
+}
+function addWater(){if(water<8)water++;renderWater();toast('Vaso registrado 💧')}
+function addAppointment(){
+ const doctor=document.getElementById('newDoctor').value||'Nueva consulta',date=document.getElementById('newDate').value||'2025-10-20',time=document.getElementById('newTime').value||'09:00';
+ const d=new Date(date+'T00:00'),day=d.getDate(),month=d.toLocaleString('es-MX',{month:'short'}).replace('.','').toUpperCase();
+ const e=document.createElement('div');e.className='appt';e.innerHTML=`<div class="date"><small>${month}</small><b>${day}</b></div><div class="appt-main"><b>${doctor}</b><small>${time}</small></div><span class="tag ok">Nueva</span>`;
+ document.getElementById('appointments').prepend(e);closeModal('appointmentModal');toast('Cita guardada')
+}
+function addReminder(){const n=document.getElementById('remName').value||'Nuevo recordatorio',t=document.getElementById('remTime').value||'09:00';closeModal('reminderModal');toast('Recordatorio creado · '+n+' · '+t)}
+function initAppointments(){
+ const a=[['28','OCT','Dentista','Dr. Carlos Ramírez · 10:00 a.m.'],['15','OCT','Lic. Nutrición Joshoa Aguilar','Nutrición · 09:00 a.m.']];
+ const w=document.getElementById('appointments');w.innerHTML='';
+ a.forEach(x=>w.innerHTML+=`<div class="appt"><div class="date"><small>${x[1]}</small><b>${x[0]}</b></div><div class="appt-main"><b>${x[2]}</b><small>${x[3]}</small></div><span class="tag ok">Confirmada</span></div>`);
+}
+document.getElementById('search').addEventListener('input',e=>{if(e.target.value.trim().length>2)toast('Buscando en tu expediente…')});
+renderWater();initAppointments();
+</script>
+</body>
+</html>
